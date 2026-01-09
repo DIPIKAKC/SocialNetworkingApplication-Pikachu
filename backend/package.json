@@ -1,10 +1,11 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "Social Networking Application",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
