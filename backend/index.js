@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js'
+import postRoutes from './routes/postRoutes.js'
 
 dotenv.config();
 
@@ -33,3 +34,4 @@ app.get('/', (req, res) => {
 
 
 app.use(userRoutes);
+app.use(postRoutes);
