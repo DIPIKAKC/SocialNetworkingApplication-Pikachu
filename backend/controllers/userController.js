@@ -48,7 +48,7 @@ export const loginUser = async (req, res) => {
             status: 'success',
             data: {
                 token,
-                id:account.id
+                id: account.id
             }
         })
 
@@ -59,3 +59,48 @@ export const loginUser = async (req, res) => {
         })
     }
 }
+
+
+export const updateUser = async (req, res) => {
+    const { id } = req.params;
+    const { bio, username, email } = req.body ?? {};
+    try {
+        const existingUser = await Users.findByIdAndUpdate(id);
+
+        if (!existingUser) {
+            return res.status(404).json({ status: "error", message: "User doesn't exist" })
+        }
+
+        existingUser.bio = bio || existingUser.bio;
+        existingUser.username = username || existingUser.username;
+        existingUser.email = email || existingUser.email;
+        await existingUser.save();
+        return res.status(200).json({
+            status: 'success',
+            data: 'User successfully updated',
+            existingUser
+        });
+    } catch (error) {
+        return res.status(500).json({ status: "error", message: error.message })
+    }
+}
+
+
+export const getUserById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const singleUser = await Users.findById(id).select("-password");
+        return res.status(200).json({
+            status: "success",
+            singleUser
+        })
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        })
+
+    }
+}
+
+//personal prof

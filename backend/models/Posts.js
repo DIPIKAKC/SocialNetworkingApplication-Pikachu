@@ -25,7 +25,10 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
+    
+    bio:{
+        type: String,
+    },
     //parent referencing
     author: {
         type: mongoose.Schema.Types.ObjectId,
