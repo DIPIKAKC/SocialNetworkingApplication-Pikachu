@@ -33,5 +33,5 @@ app.get('/', (req, res) => {
 });
 
 
-app.use(userRoutes);
-app.use(postRoutes);
+app.use("/api/users",userRoutes);
+app.use("/api/posts",postRoutes);

@@ -25,10 +25,7 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    
-    bio:{
-        type: String,
-    },
+
     //parent referencing
     author: {
         type: mongoose.Schema.Types.ObjectId,
@@ -45,12 +42,6 @@ const postSchema = new mongoose.Schema({
 
     //child referencing
     comments: [commentSchema],
-
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-
 
 }, { timestamps: true })
 
