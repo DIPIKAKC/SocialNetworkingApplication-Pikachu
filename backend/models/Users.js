@@ -1,3 +1,4 @@
+import { required } from "joi";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -19,6 +20,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
+        required:true
     },
     bio: {
         type: String,

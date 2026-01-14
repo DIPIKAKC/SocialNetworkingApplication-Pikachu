@@ -4,13 +4,15 @@ import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req, res) => {
     const { username, email, password } = req.body || {};
+    const profilePicture = req.file ? req.file.path : null;
+    console.log('profilePicture', profilePicture);
 
     try {
 
-        if (!username || !email || !password) {
+        if (!username || !email || !password || !profilePicture) {
             return res.status(400).json({
                 status: "error",
-                message: "username, email and password are required",
+                message: "all details are required",
             });
         }
 
@@ -19,7 +21,8 @@ export const registerUser = async (req, res) => {
         const newUser = await Users.create({
             username,
             email,
-            password: hashPass
+            password: hashPass,
+            profilePicture
         });
         return res.status(200).json({ status: "success", message: "user registered successfully", data: newUser })
     } catch (error) {
@@ -64,6 +67,8 @@ export const loginUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     const { id } = req.params;
     const { bio, username, email } = req.body ?? {};
+    const profilePicture = req.file ? req.file.path : null;
+
     try {
         const existingUser = await Users.findByIdAndUpdate(id);
 
@@ -74,6 +79,7 @@ export const updateUser = async (req, res) => {
         existingUser.bio = bio || existingUser.bio;
         existingUser.username = username || existingUser.username;
         existingUser.email = email || existingUser.email;
+        existingUser.profilePicture = profilePicture || existingUser.profilePicture;
         await existingUser.save();
         return res.status(200).json({
             status: 'success',
