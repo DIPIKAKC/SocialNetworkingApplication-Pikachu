@@ -54,15 +54,12 @@ export default function Login() {
                         try {
                             const response = await userLogin(val).unwrap();
                             toast.success('Login Successful');
-                            dispatch(setUser({
-                                user: response.data.user,
-                                token: response.data.token,
-                            }));
+                            dispatch(setUser(response.data));
                             nav("/");
 
                             console.log(response);
                         } catch (error) {
-                            toast.error(error.message)
+                            toast.error( error?.data?.data || error?.data?.message)
                         }
                     }}
                     validationSchema={loginShcema}

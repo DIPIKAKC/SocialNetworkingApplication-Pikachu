@@ -8,17 +8,21 @@ export const userSlice = createSlice({
   name: 'userSlice', //yo name bata connet huncha local storage sanga
   initialState: {
     //locally user saved cha bahen tancha
-    user: getUserFromLocal(),
+    user: getUserFromLocal()?.user || null,
+    token: getUserFromLocal()?.token || null,
   },
   reducers: {
     //state:initial state (user object)
     //action: Tala pass gareko function action object bancha ani pachi pass gareko valur chaida 'action.payload' bata access garcha
     setUser: (state, action) => {
-      state.user = action.payload; //pass gareko kura
-      setUserToLocal(action.payload.user,action.payload.token);
+      state.user = action.payload.user; //pass gareko kura
+      state.token = action.payload.token;
+      setUserToLocal(action.payload);
+
     },
-    removeUser: (state, action) => {
+    removeUser: (state) => {
       state.user = null;
+      state.token = null;
       removeUserFromLocal();
     },
 

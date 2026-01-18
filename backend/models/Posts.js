@@ -33,6 +33,8 @@ const postSchema = new mongoose.Schema({
         required: true
     },
 
+    image: { type: String },
+
     likes: [
         {
             type: mongoose.Schema.Types.ObjectId,

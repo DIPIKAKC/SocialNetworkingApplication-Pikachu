@@ -40,7 +40,7 @@ export const postsApi = mainApi.injectEndpoints({
                 url: `/posts/${data.id}`,
                 method: 'DELETE',
                 headers: {
-                    Authorization: data.token,
+                    Authorization: `Bearer ${data.token}`,
                 },
             }),
             invalidatesTags: ['Post']
@@ -51,7 +51,7 @@ export const postsApi = mainApi.injectEndpoints({
                 url: `/posts/${data.id}`,
                 method: 'PATCH',
                 headers: {
-                    Authorization: data.token,
+                    Authorization: `Bearer ${data.token}`,
                 },
                 body: data.body,
             }),

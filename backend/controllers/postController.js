@@ -1,12 +1,17 @@
 import Posts from "../models/Posts.js";
 
 export const createPost = async (req, res) => {
-    const { content, author } = req.body ?? {};
+    const { content } = req.body ?? {};
+    const author = req.userId;
+    const image = req.file
+        ? `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
+        : null;
+    console.log('image', image);
 
-    if (!content || !author) {
+    if (!content) {
         return res.status(400).json({
             status: "error",
-            message: "content and author are required",
+            message: "one of them are required",
         });
     }
 
@@ -14,8 +19,9 @@ export const createPost = async (req, res) => {
         const newPost = await Posts.create({
             content,
             author,
+            image
         })
-        return res.status(200).json({ status: "success", message: "Post created successfully", newPost })
+        return res.status(200).json({ status: "success", message: "Post created successfully", post: newPost })
     } catch (error) {
         return res.status(500).json({ status: "error", message: error.message })
     }
@@ -25,19 +31,32 @@ export const createPost = async (req, res) => {
 export const updatePost = async (req, res) => {
     const { id } = req.params;
     const { content } = req.body ?? {};
+    const image = req.file
+        ? `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
+        : null;
+    console.log('image', image);
     try {
-        const existingProduct = await Posts.findByIdAndUpdate(id);
-
-        if (!existingProduct) {
+        const existingPost = await Posts.findById(id).populate("author");
+        console.log("author id:", existingPost.author._id)
+        console.log("req id:", req.userId)
+        if (!existingPost) {
             return res.status(404).json({ status: "error", message: "Post doesn't existing" })
         }
 
-        existingProduct.content = content || existingProduct.content;
-        await existingProduct.save();
+        if (existingPost.author._id.toString() !== req.userId) {
+            return res.status(403).json({
+                status: "error",
+                message: "You are not authorized to update this post",
+            });
+        }
+
+        existingPost.content = content ?? existingPost.content;
+        existingPost.image = image ?? existingPost.image;
+        await existingPost.save();
         return res.status(200).json({
             status: 'success',
             data: 'Post successfully updated',
-            existingProduct
+            post: existingPost
         });
     } catch (error) {
         return res.status(500).json({ status: "error", message: error.message })
@@ -48,9 +67,17 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
     const { id } = req.params;
     try {
-        const isExist = await Posts.findById(id);
+        const isExist = await Posts.findById(id).populate("author");
         if (!isExist) return res.status(404).json({ status: 'error', data: 'Post not found' });
-        await isExist.deleteOne();
+
+        if (isExist.author._id.toString() !== req.userId) {
+            return res.status(403).json({
+                status: "error",
+                message: "You are not authorized to delete this post",
+            });
+        }
+
+        await Posts.findByIdAndDelete(id);
         return res.status(200).json({
             status: 'success',
             message: 'Post deleted successfully'
@@ -64,8 +91,8 @@ export const deletePost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
     try {
-        const allPosts = await Posts.find();
-        return res.status(200).json({ status: "success", allPosts })
+        const posts = await Posts.find().populate("author", "username profilePicture");
+        return res.status(200).json({ status: "success", posts: posts })
     } catch (error) {
         return res.status(500).json({ status: "error", message: error.message })
     }

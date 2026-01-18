@@ -8,88 +8,131 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useGetUserQuery, useUpdateUserMutation } from "@/pages/APIs/UserApi/userApi"
 import { Formik } from "formik"
-
+import toast from "react-hot-toast"
+import { useSelector } from "react-redux"
+import * as Yup from 'yup'
 
 
 export default function EditProfile({ onClose }) {
+    const { user } = useSelector((state) => state.userSlice);
+    const { isLoading, data, error } = useGetUserQuery()
+    const [updateUser, { isLoading: updateLoading }] = useUpdateUserMutation();
+    console.log(user)
+    if (isLoading) return <div className="flex gap-2 items-end">
+        <h3>Loading</h3>
+        <Spinner />
+    </div>
+    if (error) return <p className="text-pink-500">{error.data.message}</p>
+    // console.log("username:,", data?.user?.username || '',)
+
+    const loginShcema = Yup.object({
+        email: Yup.string().email().required(),
+        username: Yup.string().min(3).required()
+    })
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
 
             <Card className="w-120 h-fit relative">
                 <CardHeader className={"flex flex-row items-center justify-between"}>
-                    <CardTitle>Edit your Post</CardTitle>
+                    <CardTitle>Edit your Profile</CardTitle>
                     <button onClick={onClose} className="text-gray-500 cursor-po">✕</button>
 
                 </CardHeader>
                 <CardContent>
                     <Formik
                         initialValues={{
+                            username: data?.user?.username || '',
+                            email: data?.user?.email || '',
+                            bio: data?.user?.bio || '',
+                            profilePicture: null, // Add this for the new profilePicture file
+                            profilePictureReview: data?.user?.profilePicture || '', // Show existing image initially
                         }}
                         onSubmit={async (val) => {
+                            try {
+                                const formData = new FormData();
+                                formData.append('username', val.username);
+                                formData.append('email', val.email);
+                                formData.append('bio', val.bio);
+                                formData.append('profilePicture', val.profilePicture);
+
+                                await updateUser({
+                                    id: user.id,
+                                    formData
+                                }).unwrap();
+                                toast.success('Update successful');
+                                onClose();
+                            } catch (error) {
+                                toast.error(error.data.message);
+                            }
                         }}
+                        validationSchema={loginShcema}
+
                     >
                         {({ handleChange, handleSubmit, errors, touched, setFieldValue, values }) => (
                             <form onSubmit={handleSubmit}>
                                 <div className="flex flex-col gap-5">
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="title">Username</Label>
+                                        <Label htmlFor="username">Username</Label>
                                         <Input
-                                            name="title"
+                                            name="username"
                                             onChange={handleChange}
-                                            value={values.title}
-                                            id="title"
+                                            value={values.username}
+                                            id="username"
                                             type="text"
-                                            placeholder="Write a caption"
+                                            // placeholder="Write a caption"
                                             className={'border-none'}
                                         />
-                                        {touched.title && errors.title && <p className="text-red-500">{errors.title}</p>}
+                                        {touched.username && errors.username && <p className="text-red-500">{errors.username}</p>}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="title">Email</Label>
+                                        <Label htmlFor="email">Email</Label>
                                         <Input
-                                            name="title"
+                                            name="email"
                                             onChange={handleChange}
-                                            value={values.title}
-                                            id="title"
+                                            value={values.email}
+                                            id="email"
                                             type="text"
-                                            placeholder="email"
+                                            // placeholder="email"
                                             className={'border-none'}
                                         />
-                                        {touched.title && errors.title && <p className="text-red-500">{errors.title}</p>}
+                                        {touched.email && errors.email && <p className="text-red-500">{errors.email}</p>}
                                     </div>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="title">Bio</Label>
+                                        <Label htmlFor="bio">Bio</Label>
                                         <Input
-                                            name="title"
+                                            name="bio"
                                             onChange={handleChange}
-                                            value={values.title}
-                                            id="title"
+                                            value={values.bio}
+                                            id="bio"
                                             type="text"
-                                            placeholder="bio"
+                                            // placeholder="bio"
                                             className={'border-none'}
                                         />
-                                        {touched.title && errors.title && <p className="text-red-500">{errors.title}</p>}
+                                        {touched.bio && errors.bio && <p className="text-red-500">{errors.bio}</p>}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="title">Change Profile picture</Label>
+                                        <Label htmlFor="profilePicture">Change Profile picture</Label>
                                         <Input
-                                            name="image"
+                                            name="profilePicture"
                                             onChange={(e) => {
                                                 const file = e.target.files[0];
-                                                setFieldValue('imageReview', URL.createObjectURL(file));
-                                                setFieldValue('image', file);
+                                                setFieldValue('profilePictureReview', URL.createObjectURL(file));
+                                                setFieldValue('profilePicture', file);
                                             }}
 
-                                            id="image"
+                                            id="profilePicture"
                                             type="file"
+                                            accept="image/*"
                                             className={'h-40'}
                                         />
-                                        {touched.image && errors.image && <p className="text-red-500">{errors.image}</p>}
-                                        {values.imageReview && !errors.image && <img src={values.imageReview} alt="" />}
+                                        {touched.profilePicture && errors.profilePicture && <p className="text-red-500">{errors.profilePicture}</p>}
+                                        {values.profilePictureReview && !errors.profilePicture && <img src={values.profilePictureReview} alt="" className="h-20" />}
                                     </div>
 
 

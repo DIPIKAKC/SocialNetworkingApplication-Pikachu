@@ -5,24 +5,18 @@ const userApi = mainApi.injectEndpoints({
 
 
     getUser: builder.query({
-      query: ({token}) => ({
-        url: `/users`,
+      query: () => ({
+        url: "users",
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
       }),
       providesTags: ['User']
     }),
 
     updateUser: builder.mutation({
-      query: ({id,token,body}) => ({
+      query: ({id,formData}) => ({
         url: `/users/${id}`,
         method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: body
+        body: formData
       }),
       invalidatesTags: ['User']
     }),

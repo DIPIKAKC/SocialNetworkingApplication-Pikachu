@@ -4,7 +4,9 @@ import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req, res) => {
     const { username, email, password } = req.body || {};
-    const profilePicture = req.file ? req.file.path : null;
+    const profilePicture = req.file
+        ? `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
+        : null;
     console.log('profilePicture', profilePicture);
 
     try {
@@ -22,7 +24,7 @@ export const registerUser = async (req, res) => {
             username,
             email,
             password: hashPass,
-            profilePicture
+            profilePicture: profilePicture
         });
         return res.status(200).json({ status: "success", message: "user registered successfully", data: newUser })
     } catch (error) {
@@ -36,7 +38,7 @@ export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body || {};
 
-        if (!email || !password) return res.status().json({ status: 'error', data: ('please provide your details to login') })
+        if (!email || !password) return res.status(400).json({ status: 'error', data: ('please provide your details to login') })
 
         let account = await Users.findOne({ email });
         if (!account) return res.status(404).json({ status: 'error', data: "User doesnot exist" })
@@ -46,13 +48,17 @@ export const loginUser = async (req, res) => {
 
         const token = jwt.sign({
             id: account.id,
-        }, 'secret');
+        }, process.env.JWT_SECRET);
         return res.status(200).json({
             status: 'success',
             data: {
+                user: {
+                    id: account.id,
+                    email: account.email,
+                    profilePicture: account.profilePicture,
+                },
                 token,
-                id: account.id
-            }
+            },
         })
 
     } catch (error) {
@@ -65,26 +71,36 @@ export const loginUser = async (req, res) => {
 
 
 export const updateUser = async (req, res) => {
-    const { id } = req.params;
     const { bio, username, email } = req.body ?? {};
-    const profilePicture = req.file ? req.file.path : null;
+    const profilePicture = req.file
+        ? `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
+        : null;
+    const { id } = req.params;
 
     try {
-        const existingUser = await Users.findByIdAndUpdate(id);
+        const existingUser = await Users.findById(id);
 
         if (!existingUser) {
             return res.status(404).json({ status: "error", message: "User doesn't exist" })
         }
 
-        existingUser.bio = bio || existingUser.bio;
-        existingUser.username = username || existingUser.username;
-        existingUser.email = email || existingUser.email;
-        existingUser.profilePicture = profilePicture || existingUser.profilePicture;
+        if (id !== req.userId) {
+            return res.status(403).json({
+                status: "error",
+                message: "You are not authorized to update this user",
+            });
+        }
+
+        existingUser.username = username ?? existingUser.username;
+        existingUser.email = email ?? existingUser.email;
+        existingUser.bio = bio ?? existingUser.bio;
+        existingUser.profilePicture = profilePicture ?? existingUser.profilePicture;
+
         await existingUser.save();
         return res.status(200).json({
             status: 'success',
             data: 'User successfully updated',
-            existingUser
+            user: existingUser
         });
     } catch (error) {
         return res.status(500).json({ status: "error", message: error.message })
@@ -92,13 +108,14 @@ export const updateUser = async (req, res) => {
 }
 
 
-export const getUserById = async (req, res) => {
-    const { id } = req.params;
+export const getUser = async (req, res) => {
     try {
-        const singleUser = await Users.findById(id).select("-password");
+        const user = await Users.findById(req.userId).select("-password");
+        if (!user) return res.status(404).json({ status: 'error', data: 'user not found' })
+
         return res.status(200).json({
             status: "success",
-            singleUser
+            user: user
         })
     } catch (error) {
         res.status(500).json({
@@ -108,6 +125,7 @@ export const getUserById = async (req, res) => {
 
     }
 }
+
 
 //personal prof
 export const toggleLikePost = async (req, res) => {

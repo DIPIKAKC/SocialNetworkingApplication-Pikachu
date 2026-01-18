@@ -10,14 +10,16 @@ export const authApi = mainApi.injectEndpoints({
                 body
             })
         }),
-        
+
         userRegister: builder.mutation({
             query: (formData) => ({
-                url: 'users/register',
-                method: 'POST',
-                body: formData
-            })
+                url: "users/register",
+                method: "POST",
+                body: formData,
+                formData: true,
+            }),
         }),
+
 
 
     })

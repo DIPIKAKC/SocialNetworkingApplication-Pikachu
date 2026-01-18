@@ -69,7 +69,7 @@ export default function Signup() {
                             toast.success("User Registered Successfully");
                             nav("/login");
                         } catch (error) {
-                            toast.error(error?.message || "Registration failed");
+                            toast.error(error?.data?.data || error?.data?.message || "Registration failed");
                         }
                     }}
 
