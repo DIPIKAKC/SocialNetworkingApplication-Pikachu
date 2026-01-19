@@ -10,7 +10,6 @@ import AuthLayout from "./components/AuthLayout";
 import SinglePost from "./pages/User/SinglePost";
 import OtherProfile from "./pages/User/OtherProfile";
 import Search from "./pages/User/Search";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 
 
@@ -18,65 +17,47 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <RootLayout />,
+    element: (
+      <ProtectedRoute>
+        <RootLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
-        element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        ),
+        element: <Home />
       },
       {
         path: 'profile',
-        element: (
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        ),
+        element: <Profile />
       },
       {
         path: 'profile/:id',
-        element: (
-          <ProtectedRoute>
-            <OtherProfile />
-          </ProtectedRoute>
-        ),
+        element: <OtherProfile />
       },
+
+
+      // POST
       {
         path: 'addpost',
-        element: (
-          <ProtectedRoute>
-            <CreatePost />
-          </ProtectedRoute>
-        ),
+        element: <CreatePost />
       },
       {
         path: 'editpost',
-        element: (
-          <ProtectedRoute>
-            <EditPost />
-          </ProtectedRoute>
-        ),
+        element: <EditPost />
       },
       {
         path: "posts/:id",
-        element: (
-          <ProtectedRoute>
-            <SinglePost />
-          </ProtectedRoute>
-        ),
+        element: <SinglePost />,
       },
+
+
+      //SEARCH
       {
         path: 'search',
-        element: (
-          <ProtectedRoute>
-            <Search />
-          </ProtectedRoute>
-        ),
+        element: <Search />
       },
-    ],
+    ]
   },
   {
     element: <AuthLayout />,
