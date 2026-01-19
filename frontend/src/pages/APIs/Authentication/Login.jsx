@@ -54,11 +54,11 @@ export default function Login() {
                         onSubmit={async (val) => {
                             try {
                                 const response = await userLogin(val).unwrap();
-                                toast.success('Login Successful');
                                 dispatch(setUser({
                                     user: response.data.user,
                                     token: response.data.token
                                 }));
+                                toast.success('Login Successful');
                                 nav("/");
 
                                 console.log(response);
