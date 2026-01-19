@@ -58,6 +58,11 @@ export default function Login() {
                                     user: response.data.user,
                                     token: response.data.token
                                 }));
+                                localStorage.setItem("user", JSON.stringify({
+                                    user: response.data.user,
+                                    token: response.data.token
+                                }));
+
                                 toast.success('Login Successful');
                                 nav("/");
 
