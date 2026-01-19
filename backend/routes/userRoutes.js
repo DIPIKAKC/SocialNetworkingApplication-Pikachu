@@ -1,8 +1,8 @@
 import express from 'express';
 import { followUser, getAllUser, getFollowCounts, getUser, getUserById, loginUser, registerUser, updateUser } from '../controllers/userController.js';
 import { notAllowed } from '../utils/notAllowed.js';
-import { upload } from '../utils/Multer.js';
 import { checkUser } from '../middleware/checkUser.js';
+import { upload } from '../utils/cloudinary.js';
 
 const router = express.Router();
 
