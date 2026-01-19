@@ -75,12 +75,7 @@ export default function Home() {
             console.error(err);
         }
     };
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            nav("/login");
-        }
-    }, []);
+
     return (
 
         <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-10">
