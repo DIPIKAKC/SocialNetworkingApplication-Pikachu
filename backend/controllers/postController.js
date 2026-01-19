@@ -3,9 +3,8 @@ import Posts from "../models/Posts.js";
 export const createPost = async (req, res) => {
     const { content } = req.body ?? {};
     const author = req.userId;
-    const image = req.file
-        ? `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
-        : null;
+    const image = req.file?.path || null; // Cloudinary returns URL in path
+
     console.log('image', image);
 
     if (!content) {
@@ -31,9 +30,8 @@ export const createPost = async (req, res) => {
 export const updatePost = async (req, res) => {
     const { id } = req.params;
     const { content } = req.body ?? {};
-    const image = req.file
-        ? `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
-        : null;
+    const image = req.file?.path || null; // Cloudinary returns URL in path
+
     console.log('image', image);
     try {
         const existingPost = await Posts.findById(id).populate("author");

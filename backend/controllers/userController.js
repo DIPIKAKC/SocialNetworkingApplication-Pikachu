@@ -5,9 +5,8 @@ import Posts from "../models/Posts.js";
 
 export const registerUser = async (req, res) => {
     const { username, email, password } = req.body || {};
-    const profilePicture = req.file
-        ? `${process.env.BASE_URL}/${req.file.path.replace(/\\/g, "/")}`
-        : null;
+    const profilePicture = req.file?.path || null; // Cloudinary returns URL in path
+
     console.log('profilePicture', profilePicture);
 
     try {

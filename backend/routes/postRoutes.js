@@ -2,7 +2,7 @@ import express from 'express';
 import { notAllowed } from '../utils/notAllowed.js';
 import { createPost, deletePost, getAllPosts, getMyPosts, getSinglePost, toggleLikePost, updatePost } from '../controllers/postController.js';
 import { checkUser } from '../middleware/checkUser.js';
-import { upload } from '../utils/Multer.js';
+import { upload } from '../utils/cloudinary.js';
 
 const router = express.Router();
 
