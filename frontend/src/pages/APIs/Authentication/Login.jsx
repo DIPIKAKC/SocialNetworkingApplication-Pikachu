@@ -55,7 +55,10 @@ export default function Login() {
                             try {
                                 const response = await userLogin(val).unwrap();
                                 toast.success('Login Successful');
-                                dispatch(setUser(response.data));
+                                dispatch(setUser({
+                                    user: response.data.user,
+                                    token: response.data.token
+                                }));
                                 nav("/");
 
                                 console.log(response);
