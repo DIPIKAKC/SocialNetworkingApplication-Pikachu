@@ -70,7 +70,6 @@ export default function EditPost({ onClose, post }) {
                       value={values.content}
                       id="content"
                       type="text"
-                      // placeholder="Write a caption"
                       className={'border-none'}
                     />
 
@@ -110,7 +109,6 @@ export default function EditPost({ onClose, post }) {
                           className="w-full h-full object-cover"
                         />
 
-                        {/* Optional: Change image button */}
                         <button
                           type="button"
                           className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded"

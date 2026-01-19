@@ -29,35 +29,41 @@ export default function OtherProfile() {
         }
     };
 
-    
-    return (
-        <div className="min-h-screen bg-gray-50">
 
-            <div className='ml-30'>
-                <Button variant='ghost' size='sm' onClick={() => nav(-1)}>
-                    <ArrowLeftIcon className='size-5 mr-2 ' />
-                    Back
+    return (
+        <div className="min-h-screen">
+
+            <div className="px-4 sm:px-6 md:px-8 lg:px-32 mt-6">
+                <Button
+                    variant="ghost"
+                    className="bg-gray-50"
+                    size="sm"
+                    onClick={() => nav(-1)}
+                >
+                    <ArrowLeftIcon className="h-4 w-4" />
+                    <span className="hidden sm:inline">Back</span>
                 </Button>
             </div>
-            <div className="max-w-5xl mx-auto px-4 py-30">
+
+            <div className="max-w-5xl mx-auto px-3 sm:px-4 py-20 sm:py-30">
                 {/* Profile Header */}
-                <Card className="mb-6">
+                <Card className="mb-4 sm:mb-6">
                     <CardContent className="p-0">
                         {/* Profile Info Section */}
-                        <div className="px-8 pb-6">
+                        <div className="px-4 sm:px-8 pb-4 sm:pb-6">
 
-                            <div className="flex items-end gap-5 mb-4">
-                                <Avatar className="h-40 w-40 border-8 border-white shadow-xl -mt-30">
-                                    <AvatarImage src={otherUsers?.user?.profilePicture} />
-                                    <AvatarFallback className="bg-gradient-to-br from-orange-400 to-pink-500 text-white text-5xl">RV</AvatarFallback>
+                            <div className="flex items-end gap-3 sm:gap-5 mb-3 sm:mb-4">
+                                <Avatar className="h-24 w-24 sm:h-32 md:h-40 sm:w-32 md:w-40 border-4 sm:border-8 border-white shadow-xl -mt-16 sm:-mt-20 md:-mt-30">
+                                    <AvatarImage src={otherUsers?.user?.profilePicture} className={'object-cover'} />
+                                    <AvatarFallback className="bg-gradient-to-br from-orange-400 to-pink-500 text-white text-3xl sm:text-4xl md:text-5xl">RV</AvatarFallback>
                                 </Avatar>
                             </div>
 
-                            <div className="mt-6">
-                                <div className='flex items-center gap-6'>
-                                    <h1 className="text-3xl font-bold mb-1">{otherUsers?.user?.username}</h1>
+                            <div className="mt-4 sm:mt-6">
+                                <div className='flex sm:flex-row items-start sm:items-center gap-4 sm:gap-6'>
+                                    <h1 className="text-2xl sm:text-3xl font-bold mb-1">{otherUsers?.user?.username}</h1>
                                     <div className='flex items-center gap-2'>
-                                        
+
                                         <Button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -65,11 +71,12 @@ export default function OtherProfile() {
                                             }}
                                             size="sm"
                                             variant={isFollowing ? 'secondary' : 'outline'}
+                                            className={isFollowing ? 'cursor-pointer' : 'cursor-pointer bg-blue-600 hover:bg-blue-700 text-white hover:text-white'}
                                         >
                                             <UserPlusIcon />
                                             {isFollowing ? 'Following' : 'Follow'}
                                         </Button>
-                                        <Button variant="outline" size="sm">
+                                        <Button variant="outline" className="cursor-pointer" size="sm">
                                             <MessageCircle className="h-4 w-4 mr-2" />
                                             Message
                                         </Button>
@@ -82,18 +89,19 @@ export default function OtherProfile() {
                                 </p>
 
 
-                                <div className="flex gap-8">
+
+                                <div className="flex gap-4 sm:gap-8">
                                     <div className="text-center">
-                                        <p className="text-2xl font-bold">{otherUsers?.posts?.length || 0}</p>
-                                        <p className="text-gray-600 text-sm">Posts</p>
+                                        <p className="text-xl sm:text-2xl font-bold">{otherUsers?.posts?.length || 0}</p>
+                                        <p className="text-gray-600 text-xs sm:text-sm">Posts</p>
                                     </div>
                                     <button className="text-center hover:opacity-80 transition-opacity">
                                         <p className="text-2xl font-bold">{otherUsers?.user?.followers?.length}</p>
-                                        <p className="text-gray-600 text-sm">Followers</p>
+                                        <p className="text-gray-600 text-xs sm:text-sm">Followers</p>
                                     </button>
                                     <button className="text-center hover:opacity-80 transition-opacity">
                                         <p className="text-2xl font-bold">{otherUsers?.user?.following?.length}</p>
-                                        <p className="text-gray-600 text-sm">Following</p>
+                                        <p className="text-gray-600 text-xs sm:text-sm">Following</p>
                                     </button>
 
                                 </div>
@@ -107,7 +115,7 @@ export default function OtherProfile() {
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                     {/* Posts Grid */}
                     <TabsContent value="posts" className="mt-0">
-                        <div className="grid grid-cols-3 gap-1 mt-1">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 mt-1">
                             {otherUsers?.posts?.map((post) => (
                                 <div
                                     key={post._id}
@@ -116,9 +124,9 @@ export default function OtherProfile() {
                                     <img
                                         src={post.image}
                                         onClick={() => nav(`/posts/${post?._id}`)}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover cursor-pointer"
                                     />
-                                    <p className="p-2 text-sm bg-white">
+                                    <p className="p-2 text-xs sm:text-sm bg-white">
                                         {post.content}
                                     </p>
                                 </div>

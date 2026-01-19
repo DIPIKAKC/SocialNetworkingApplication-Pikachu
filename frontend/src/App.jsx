@@ -8,6 +8,8 @@ import Login from "./pages/APIs/Authentication/Login";
 import Signup from "./pages/APIs/Authentication/Signup";
 import AuthLayout from "./components/AuthLayout";
 import SinglePost from "./pages/User/SinglePost";
+import OtherProfile from "./pages/User/OtherProfile";
+import Search from "./pages/User/Search";
 // import DeletePost from "./components/User/CRUDpost/DeletePost";
 
 
@@ -26,6 +28,10 @@ const router = createBrowserRouter([
         path: 'profile',
         element: <Profile />
       },
+      {
+        path: 'profile/:id',
+        element: <OtherProfile />
+      },
 
 
       // POST
@@ -38,8 +44,15 @@ const router = createBrowserRouter([
         element: <EditPost />
       },
       {
-        path: "posts/:id",   
+        path: "posts/:id",
         element: <SinglePost />,
+      },
+
+
+      //SEARCH
+      {
+        path: 'search',
+        element: <Search />
       },
     ]
   },

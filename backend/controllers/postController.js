@@ -101,7 +101,7 @@ export const getAllPosts = async (req, res) => {
 export const getSinglePost = async (req, res) => {
     const { id } = req.params;
     try {
-        const singlePost = await Posts.findById(id);
+        const singlePost = await Posts.findById(id).populate('author');
         return res.status(200).json({
             status: "success",
             singlePost
@@ -110,3 +110,65 @@ export const getSinglePost = async (req, res) => {
         return res.status(500).json({ status: "error", message: error.message })
     }
 }
+
+export const getMyPosts = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const myPosts = await Posts.find({ author: userId })
+            .populate("author", "username profilePicture")
+            .sort({ createdAt: -1 });
+
+
+        return res.status(200).json({
+            status: "success",
+            posts: myPosts,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            message: error.message,
+        });
+    }
+};
+
+
+export const toggleLikePost = async (req, res) => {
+    try {
+
+        const postId = req.params.id;
+        const idUser = req.userId;
+
+        const post = await Posts.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                message: "Post not found",
+            });
+        }
+
+        const isLiked = post.likes.includes(idUser);
+
+        if (isLiked) {
+            // UNLIKE
+            post.likes.pull(idUser);
+        } else {
+            // LIKE
+            post.likes.push(idUser);
+        }
+
+        await post.save();
+
+        res.status(200).json({
+            success: true,
+            message: !isLiked ? "Post unliked" : "Post liked",
+            liked: !isLiked,
+            likesCount: post.likes.length
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};

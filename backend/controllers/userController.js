@@ -1,6 +1,7 @@
 import Users from "../models/Users.js"
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Posts from "../models/Posts.js";
 
 export const registerUser = async (req, res) => {
     const { username, email, password } = req.body || {};
@@ -127,75 +128,125 @@ export const getUser = async (req, res) => {
 }
 
 
-//personal prof
-export const toggleLikePost = async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id);
+//user and their posts
+export const getUserById = async (req, res) => {
+  try {
+    const user = await Users.findById(req.params.id).select("-password");
 
-        if (!post) {
-            return res.status(404).json({
-                success: false,
-                message: "Post not found",
-            });
-        }
-
-        const userId = req.userId;
-        const isLiked = post.likes.includes(userId);
-
-        if (isLiked) {
-            post.likes = post.likes.filter(
-                (id) => id.toString() !== userId
-            );
-        } else {
-            post.likes.push(userId);
-        }
-
-        await post.save();
-
-        res.status(200).json({
-            success: true,
-            message: isLiked ? "Post unliked" : "Post liked",
-            likesCount: post.likes.length,
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+    if (!user) {
+      return res.status(404).json({ status: "error", message: "User not found" });
     }
+
+    //Fetch posts of this user
+    const posts = await Posts.find({ author: req.params.id })
+      .populate("author", "username profilePicture")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      status: "success",
+      user,
+      posts,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
 };
 
-/**
- * Add comment
- */
-export const addComment = async (req, res) => {
+//all except me
+export const getAllUser = async (req, res) => {
     try {
-        const { text } = req.body;
-        const post = await Post.findById(req.params.id);
+        const allUser = await Users.find({
+            _id: { $ne: req.userId }, // excluding current user
+        }).select("-password");
+        if (!allUser) return res.status(404).json({ status: 'error', data: 'allUser not found' })
 
-        if (!post) {
-            return res.status(404).json({
-                success: false,
-                message: "Post not found",
-            });
-        }
-
-        post.comments.push({
-            text,
-            author: req.user.id,
-        });
-
-        await post.save();
-
-        res.status(201).json({
-            success: true,
-            message: "Comment added",
-            data: post.comments,
-        });
+        return res.status(200).json({
+            status: "success",
+            allUser: allUser
+        })
     } catch (error) {
         res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+            status: 'error',
+            message: error.message
+        })
+
     }
+}
+
+
+//follow user
+export const followUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { id } = req.params; // id of user to follow
+
+    if (userId === id) {
+      return res.status(400).json({ status: "error", message: "You can't follow yourself" });
+    }
+
+    const userToFollow = await Users.findById(id);
+    const currentUser = await Users.findById(userId);
+
+    if (!userToFollow || !currentUser) {
+      return res.status(404).json({ status: "error", message: "User not found" });
+    }
+
+    const isFollowing = currentUser.following.includes(id);
+
+    if (isFollowing) {
+      // UNFOLLOW
+      currentUser.following.pull(id);
+      userToFollow.followers.pull(userId);
+    } else {
+      // FOLLOW
+      currentUser.following.push(id);
+      userToFollow.followers.push(userId);
+    }
+
+    await currentUser.save();
+    await userToFollow.save();
+
+    return res.status(200).json({
+      status: "success",
+      following: !isFollowing,
+      followersCount: userToFollow.followers.length,
+      followingCount: currentUser.following.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+
+export const getFollowCounts = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Users.findById(id)
+      .select("followers following");
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      followers: user.followers.length,
+      following: user.following.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
 };

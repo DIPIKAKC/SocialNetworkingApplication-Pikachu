@@ -12,7 +12,7 @@ export const globalSearch = async (req, res) => {
             });
         }
 
-        // 🔍 Search posts by content
+        //posts by content
         const posts = await Posts.find({
             content: { $regex: q, $options: "i" }
         })
@@ -20,7 +20,7 @@ export const globalSearch = async (req, res) => {
             .limit(20)
             .sort({ createdAt: -1 });
 
-        // 🔍 Search users by username or bio
+        //users by username or bio
         const users = await Users.find({
             $or: [
                 { username: { $regex: q, $options: "i" } },

@@ -27,7 +27,6 @@ export default function DeletePost({ id, open, onOpenChange }) {
         try {
             await removePost({ id, token: user.token }).unwrap();
             toast.success('Post deleted successfully');
-            dispatch(removeUser());
             onOpenChange(false);
         } catch (error) {
             toast.error(error?.data?.data || error?.data?.message);
@@ -47,6 +46,6 @@ export default function DeletePost({ id, open, onOpenChange }) {
                     <AlertDialogAction onClick={handleRemovePost}>ConFirm</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
-            =        </AlertDialog>
+        </AlertDialog>
     )
 }

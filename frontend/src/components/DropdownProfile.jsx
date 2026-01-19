@@ -34,7 +34,7 @@ export default function DropdownProfile({ user }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant='secondary' size='icon' className='overflow-hidden rounded-full'>
-          <img src={profilePicture} alt='Hallie Richards' />
+          <img src={profilePicture} alt='Hallie Richards' className='w-full h-full object-cover'/>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56'>

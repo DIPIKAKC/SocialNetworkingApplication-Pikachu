@@ -47,8 +47,8 @@ export default function EditProfile({ onClose }) {
                             username: data?.user?.username || '',
                             email: data?.user?.email || '',
                             bio: data?.user?.bio || '',
-                            profilePicture: null, // Add this for the new profilePicture file
-                            profilePictureReview: data?.user?.profilePicture || '', // Show existing image initially
+                            profilePicture: null, //for the new profilePicture file
+                            profilePictureReview: data?.user?.profilePicture || '', //existing image show
                         }}
                         onSubmit={async (val) => {
                             try {
@@ -83,7 +83,6 @@ export default function EditProfile({ onClose }) {
                                             value={values.username}
                                             id="username"
                                             type="text"
-                                            // placeholder="Write a caption"
                                             className={'border-none'}
                                         />
                                         {touched.username && errors.username && <p className="text-red-500">{errors.username}</p>}
@@ -97,7 +96,6 @@ export default function EditProfile({ onClose }) {
                                             value={values.email}
                                             id="email"
                                             type="text"
-                                            // placeholder="email"
                                             className={'border-none'}
                                         />
                                         {touched.email && errors.email && <p className="text-red-500">{errors.email}</p>}
@@ -110,7 +108,6 @@ export default function EditProfile({ onClose }) {
                                             value={values.bio}
                                             id="bio"
                                             type="text"
-                                            // placeholder="bio"
                                             className={'border-none'}
                                         />
                                         {touched.bio && errors.bio && <p className="text-red-500">{errors.bio}</p>}
@@ -129,10 +126,35 @@ export default function EditProfile({ onClose }) {
                                             id="profilePicture"
                                             type="file"
                                             accept="image/*"
-                                            className={'h-40'}
+                                            className="cursor-pointer"
                                         />
-                                        {touched.profilePicture && errors.profilePicture && <p className="text-red-500">{errors.profilePicture}</p>}
-                                        {values.profilePictureReview && !errors.profilePicture && <img src={values.profilePictureReview} alt="" className="h-20" />}
+                                        {/* Error message */}
+                                        {touched.image && errors.image && (
+                                            <p className="text-sm text-red-500">{errors.image}</p>
+                                        )}
+
+                                        {/* Image Preview */}
+                                        {values.imageReview && !errors.image && (
+                                            <div className="relative w-40 h-40 rounded-lg overflow-hidden border">
+                                                <img
+                                                    src={values.imageReview}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+
+                                                {/* image change */}
+                                                <button
+                                                    type="button"
+                                                    className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded"
+                                                    onClick={() => {
+                                                        setFieldValue('imageReview', '');
+                                                        setFieldValue('image', null);
+                                                    }}
+                                                >
+                                                    Change
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
 
@@ -165,7 +187,7 @@ export default function EditProfile({ onClose }) {
 
 
 
-        </div>
+        </div >
     )
 }
 

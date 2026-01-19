@@ -37,166 +37,177 @@ export default function Signup() {
     const [userRegister, { isLoading }] = useUserRegisterMutation();
     const [show, setShow] = useState(false);
     return (
-        <Card className="w-full max-w-sm">
-            <CardHeader>
-                <CardTitle>Signup to your account</CardTitle>
-                <CardDescription>
-                    Enter your email below to register your account
-                </CardDescription>
-                <CardAction>
-                    <Button onClick={() => nav(-1)} variant="link">Login</Button>
-                </CardAction>
-            </CardHeader>
-            <CardContent>
-                <Formik
-                    initialValues={{
-                        username: "",
-                        email: "",
-                        password: "",
-                        profilePicture: null,
-                        profilePicturePreview: null,
-                    }}
+        <div className="min-h-screen flex items-center justify-center">
 
-                    onSubmit={async (values) => {
-                        try {
-                            const formData = new FormData();
-                            formData.append("username", values.username);
-                            formData.append("email", values.email);
-                            formData.append("password", values.password);
-                            formData.append("profilePicture", values.profilePicture);
+            <Card className="w-full max-w-sm">
+                <CardHeader>
+                    <CardTitle>Signup to your account</CardTitle>
+                    <CardDescription>
+                        Enter your email below to register your account
+                    </CardDescription>
+                    <CardAction>
+                        <Button onClick={() => nav(-1)} variant="link">Login</Button>
+                    </CardAction>
+                </CardHeader>
+                <CardContent>
+                    <Formik
+                        initialValues={{
+                            username: "",
+                            email: "",
+                            password: "",
+                            profilePicture: null,
+                            profilePicturePreview: null,
+                        }}
 
-                            const response = await userRegister(formData).unwrap();
-                            toast.success("User Registered Successfully");
-                            nav("/login");
-                        } catch (error) {
-                            toast.error(error?.data?.data || error?.data?.message || "Registration failed");
-                        }
-                    }}
+                        onSubmit={async (values) => {
+                            try {
+                                const formData = new FormData();
+                                formData.append("username", values.username);
+                                formData.append("email", values.email);
+                                formData.append("password", values.password);
+                                formData.append("profilePicture", values.profilePicture);
+
+                                const response = await userRegister(formData).unwrap();
+                                toast.success("User Registered Successfully");
+                                nav("/login");
+                            } catch (error) {
+                                toast.error(error?.data?.data || error?.data?.message || "Registration failed");
+                            }
+                        }}
 
 
-                    validationSchema={registerShcema}
-                >
-                    {({ handleChange, handleSubmit, values, touched, errors, setFieldValue }) => (
+                        validationSchema={registerShcema}
+                    >
+                        {({ handleChange, handleSubmit, values, touched, errors, setFieldValue }) => (
 
-                        <form onSubmit={handleSubmit}>
-                            <div className="flex flex-col gap-6">
+                            <form onSubmit={handleSubmit}>
+                                <div className="flex flex-col gap-6">
 
-                                {/* Username */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="username">Username</Label>
-                                    <Input
-                                        id="username"
-                                        name="username"
-                                        type="text"
-                                        placeholder="your name"
-                                        value={values.username}
-                                        onChange={handleChange}
-                                    />
-                                    {errors.username && touched.username && (
-                                        <p className="text-red-500">{errors.username}</p>
-                                    )}
-                                </div>
-
-                                {/* Email */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        placeholder="m@example.com"
-                                        value={values.email}
-                                        onChange={handleChange}
-                                    />
-                                    {errors.email && touched.email && (
-                                        <p className="text-red-500">{errors.email}</p>
-                                    )}
-                                </div>
-
-                                {/* Password */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password">Password</Label>
-                                    <div className="relative">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="username">Username</Label>
                                         <Input
-                                            id="password"
-                                            name="password"
-                                            type={show ? "text" : "password"}
-                                            placeholder="******"
-                                            className="pr-9"
-                                            value={values.password}
+                                            id="username"
+                                            name="username"
+                                            type="text"
+                                            placeholder="your name"
+                                            value={values.username}
                                             onChange={handleChange}
                                         />
-
-                                        <Button
-                                            type="button"
-                                            onClick={() => setShow(!show)}
-                                            variant="ghost"
-                                            size="icon"
-                                            className="absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
-                                        >
-                                            {show ? <LockKeyholeOpenIcon /> : <LockKeyhole />}
-                                        </Button>
+                                        {errors.username && touched.username && (
+                                            <p className="text-red-500">{errors.username}</p>
+                                        )}
                                     </div>
-                                    {errors.password && touched.password && (
-                                        <p className="text-red-500">{errors.password}</p>
-                                    )}
-                                </div>
 
-
-                                {/* profilePicture */}
-                                <div className="grid gap-2">
-                                    <Label htmlFor="profilePicture">Change Profile Picture</Label>
-
-                                    <Input
-                                        id="profilePicture"
-                                        name="profilePicture"
-                                        type="file"
-                                        accept="image/*"
-                                        className="h-40"
-                                        onChange={(e) => {
-                                            const file = e.target.files[0];
-
-                                            if (!file) return;
-
-                                            setFieldValue("profilePicturePreview", URL.createObjectURL(file));
-                                            setFieldValue("profilePicture", file);
-                                        }}
-                                    />
-
-                                    {touched.profilePicture && errors.profilePicture && (
-                                        <p className="text-red-500">{errors.profilePicture}</p>
-                                    )}
-
-                                    {values.profilePicturePreview && !errors.profilePicture && (
-                                        <img
-                                            src={values.profilePicturePreview}
-                                            alt="Preview"
-                                            className="h-32 w-32 rounded-full object-cover"
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="email">Email</Label>
+                                        <Input
+                                            id="email"
+                                            name="email"
+                                            type="email"
+                                            placeholder="m@example.com"
+                                            value={values.email}
+                                            onChange={handleChange}
                                         />
-                                    )}
+                                        {errors.email && touched.email && (
+                                            <p className="text-red-500">{errors.email}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="password">Password</Label>
+                                        <div className="relative">
+                                            <Input
+                                                id="password"
+                                                name="password"
+                                                type={show ? "text" : "password"}
+                                                placeholder="******"
+                                                className="pr-9"
+                                                value={values.password}
+                                                onChange={handleChange}
+                                            />
+
+                                            <Button
+                                                type="button"
+                                                onClick={() => setShow(!show)}
+                                                variant="ghost"
+                                                size="icon"
+                                                className="absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
+                                            >
+                                                {show ? <LockKeyholeOpenIcon /> : <LockKeyhole />}
+                                            </Button>
+                                        </div>
+                                        {errors.password && touched.password && (
+                                            <p className="text-red-500">{errors.password}</p>
+                                        )}
+                                    </div>
+
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="profilePicture">Change Profile Picture</Label>
+
+                                        <Input
+                                            id="profilePicture"
+                                            name="profilePicture"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+
+                                                if (!file) return;
+
+                                                setFieldValue("profilePicturePreview", URL.createObjectURL(file));
+                                                setFieldValue("profilePicture", file);
+                                            }}
+                                        />
+
+                                        {/* Error message */}
+                                        {touched.profilePicture && errors.profilePicture && (
+                                            <p className="text-sm text-red-500">{errors.profilePicture}</p>
+                                        )}
+
+                                        {/* profilePicture Preview */}
+                                        {values.profilePicturePreview && !errors.profilePicture && (
+                                            <div className="relative w-40 h-40 rounded-lg overflow-hidden border">
+                                                <img
+                                                    src={values.profilePicturePreview}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+
+                                                <button
+                                                    type="button"
+                                                    className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded"
+                                                    onClick={() => {
+                                                        setFieldValue('profilePicturePreview', '');
+                                                        setFieldValue('profilePicture', null);
+                                                    }}
+                                                >
+                                                    Change
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+                                    <div className="grid gap-2">
+                                        {isLoading ? (
+                                            <Button size="sm" variant="outline" disabled className="w-full mt-5">
+                                                <Spinner />
+                                                Submit
+                                            </Button>
+                                        ) : (
+                                            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer">
+                                                Signup
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
+                            </form>
 
-
-
-                                {/* Submit */}
-                                <div className="grid gap-2">
-                                    {isLoading ? (
-                                        <Button size="sm" variant="outline" disabled className="w-full mt-5">
-                                            <Spinner />
-                                            Submit
-                                        </Button>
-                                    ) : (
-                                        <Button type="submit" className="w-full">
-                                            Signup
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        </form>
-
-                    )}
-                </Formik>
-            </CardContent>
-        </Card>
+                        )}
+                    </Formik>
+                </CardContent>
+            </Card>
+        </div>
     )
 }

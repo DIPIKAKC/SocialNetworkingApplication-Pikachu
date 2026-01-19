@@ -4,14 +4,13 @@ import { mainApi } from "@/App/mainApi";
 export const postsApi = mainApi.injectEndpoints({
     endpoints: (builder) => ({
 
-        //query- what format data, mutation wat format data?
         getPosts: builder.query({
             query: (query) => ({
                 url: 'posts',
                 method: 'GET',
                 params: query //for search
             }),
-            providesTags: ['Post'] //It obeys 'invalidatetags' of the hook where data is expired. the hook provides task to re-fetch the data as it was expired.
+            providesTags: ['Post'] 
         }),
 
         getSinglePost: builder.query({
@@ -22,8 +21,16 @@ export const postsApi = mainApi.injectEndpoints({
             providesTags: ['Post'] //It obeys 'invalidatetags' of the hook where data is expired. the hook provides task to re-fetch the data as it was expired.
         }),
 
+        getMyPosts: builder.query({
+            query: () => ({
+                url: "posts/myposts",
+                method: "GET",
+            }),
+            providesTags: ["Posts"],
+        }),
+
         createPost: builder.mutation({
-            query: (data) => ({ //data=>addPost object
+            query: (data) => ({ //data=>createPost object
                 url: 'posts',
                 method: 'POST',
                 headers: {
@@ -58,7 +65,17 @@ export const postsApi = mainApi.injectEndpoints({
             invalidatesTags: ['Post']
         }),
 
+
+        //like post
+        toggleLikePost: builder.mutation({
+            query: (postId) => ({
+                url: `/posts/${postId}/like`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: ['Post'],
+        }),
+
     })
 })
 
-export const { useGetPostsQuery, useGetSinglePostQuery, useCreatePostMutation, useUpdatePostMutation, useRemovePostMutation } = postsApi;
+export const { useGetPostsQuery, useGetSinglePostQuery, useGetMyPostsQuery, useCreatePostMutation, useUpdatePostMutation, useRemovePostMutation, useToggleLikePostMutation } = postsApi;

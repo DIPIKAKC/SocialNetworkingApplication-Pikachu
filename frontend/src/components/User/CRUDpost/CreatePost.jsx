@@ -95,7 +95,6 @@ export default function CreatePost({ onClose }) {
 
 
                   <div className="space-y-2">
-                    {/* File input – show ONLY if no image selected */}
                     {!values.imageReview && (
                       <Input
                         name="image"
@@ -127,7 +126,6 @@ export default function CreatePost({ onClose }) {
                           className="w-full h-full object-cover"
                         />
 
-                        {/* Optional: Change image button */}
                         <button
                           type="button"
                           className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded"
@@ -151,7 +149,6 @@ export default function CreatePost({ onClose }) {
                       Create Post
                     </Button>
                   </div>
-                  {/* } */}
 
 
                 </div>
@@ -161,11 +158,6 @@ export default function CreatePost({ onClose }) {
 
             )}
           </Formik>
-
-
-
-
-
 
 
         </CardContent>

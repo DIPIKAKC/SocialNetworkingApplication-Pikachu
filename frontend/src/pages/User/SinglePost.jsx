@@ -1,3 +1,5 @@
+
+
 import React, { useState } from 'react'
 import { useGetSinglePostQuery, useToggleLikePostMutation } from '../APIs/PostApi/postApi';
 import { useNavigate, useParams } from 'react-router';
@@ -37,24 +39,30 @@ export default function SinglePost() {
     if (error) return <h1 className="text-center text-red-500">Error loading the post</h1>;
     return (
         <>
-            <div className=" mt-15 flex justify-center">
+            <div className="px-4 sm:px-4 md:px-6 lg:px-32 mt-6">
+                <Button
+                    variant="ghost"
+                    className="bg-gray-50"
+                    size="sm"
+                    onClick={() => nav(-1)}
+                >
+                    <ArrowLeftIcon className="h-4 w-4" />
+                    <span className="hidden sm:inline">Back</span>
+                </Button>
+            </div>
+
+            <div className=" mt-3 md:mt-5 flex justify-center mx-4 sm:mx-0">
                 <div className='w-full max-w-6xl'>
                     {/* Back Button */}
-                    <div className='mb-4'>
-                        <Button variant='ghost' size='sm' onClick={() => nav(-1)}>
-                            <ArrowLeftIcon className='size-5 mr-2' />
-                            Back
-                        </Button>
-                    </div>
 
                     {/* Post Cards */}
-                    <div className=' grid grid-cols-2'>
-                        <Card className='mb-6 border-r-0 rounded-r-none '>
-                            <CardHeader className='flex items-center justify-between gap-3'>
-                                <div className='flex items-start gap-3'>
-                                    <div className='flex items-center gap-3'>
+                    <div className=' grid grid-cols-1 md:grid-cols-2'>
+                        <Card className='sm:mb-3 md:mb-6 border-b-0 sm:border-r-0 rounded-b-none sm:rounded-r-none sm:rounded-bl-xl'>
+                            <CardHeader className='flex items-center justify-between gap-2 sm:gap-3'>
+                                <div className='flex items-start gap-1 sm:gap-3'>
+                                    <div className='flex items-center gap-2'>
                                         <Avatar className='ring-ring ring-2 size-10'>
-                                            <AvatarImage src={data?.singlePost?.author?.profilePicture} alt='' />
+                                            <AvatarImage src={data?.singlePost?.author?.profilePicture} alt='' className={'object-cover'} />
                                             <AvatarFallback className='text-sm'>
                                                 {data?.singlePost?.author?.username?.slice(0, 2).toUpperCase()}
                                             </AvatarFallback>
@@ -80,6 +88,7 @@ export default function SinglePost() {
                                             }}
                                             size="sm"
                                             variant={isFollowing ? 'secondary' : 'outline'}
+                                            className={isFollowing ? 'cursor-pointer' : 'cursor-pointer bg-blue-600 hover:bg-blue-700 text-white hover:text-white'}
                                         >
                                             <UserPlusIcon />
                                             {isFollowing ? 'Following' : 'Follow'}
@@ -97,8 +106,8 @@ export default function SinglePost() {
                                 />
                             </CardContent>
                         </Card>
-                        <Card className='mb-6 border-l-0 rounded-l-none'>
-                            <CardContent className='space-y-6 text-sm'>
+                        <Card className='mb-6 border border-t-0 md:border-t border-l-0 rounded-t-none md:rounded-bl-none md:rounded-tr-xl'>
+                            <CardContent className='space-y-1 sm:space-y-6 text-sm'>
                                 <p>
                                     {data?.singlePost?.content}
                                 </p>
@@ -122,6 +131,7 @@ export default function SinglePost() {
                                 <Button
                                     variant='ghost'
                                     size='sm'
+                                    className={'cursor-pointer'}
                                     onClick={async () => {
                                         try {
                                             await toggleLike(data?.singlePost?._id).unwrap();

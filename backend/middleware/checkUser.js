@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export const checkUser = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    console.log("hello",authHeader)
+    console.log("hello", authHeader)
 
     // console.log(req.headers);
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -19,8 +19,9 @@ export const checkUser = (req, res, next) => {
             status: 'error',
             data: "you are not authorized to perform this activity"
         })
-
         req.userId = decode.id;
+        // console.log("User ID:", req.userId);
+
 
         next();
     } catch (error) {
@@ -30,11 +31,3 @@ export const checkUser = (req, res, next) => {
         })
     }
 }
-
-// export const checkAdmin = (req, res, next) => {
-//     if (req.role === 'admin') return next();
-//     return res.status(401).json({
-//         status: 'error',
-//         data: "you are not authorized"
-//     })
-// }
