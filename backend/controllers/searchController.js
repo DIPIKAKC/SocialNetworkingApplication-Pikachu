@@ -27,7 +27,7 @@ export const globalSearch = async (req, res) => {
                 { bio: { $regex: q, $options: "i" } }
             ]
         })
-            .select("username profilePicture bio")
+            .select("username profilePicture bio following")
             .limit(20);
 
         return res.status(200).json({

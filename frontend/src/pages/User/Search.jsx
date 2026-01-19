@@ -7,19 +7,31 @@ import { Formik } from 'formik';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowLeftIcon, UserPlusIcon } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { useFollowUserMutation } from '../APIs/UserApi/userApi';
 
 export default function Search() {
-    const [isFollowing, setIsFollowing] = useState(false);
+    // const [isFollowing, setIsFollowing] = useState(false);
 
     const nav = useNavigate();
     const [params] = useSearchParams();
     const query = params.get("q");
-
+    const { user } = useSelector((state) => state.userSlice)
 
     const { data, isLoading } = useSearchQuery(query, {
         skip: !query
     });
     console.log('search data', data)
+
+
+    const [followUser] = useFollowUserMutation();
+    const handleFollow = async () => {
+        try {
+            await followUser(id).unwrap();
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     if (!query) return <p className="p-4">Type something to search</p>;
     if (isLoading) return <p className="p-4">Searching...</p>;
@@ -43,7 +55,8 @@ export default function Search() {
                 <div>
                     <h2 className="font-semibold text-base sm:text-lg mb-2">Users</h2>
                     {data?.users?.length === 0 && <p className="text-sm sm:text-base">No users found</p>}
-                    {data?.users?.map((user) => (
+                    {data?.users?.map((user) => {
+                        const isFollowing = user?.following?.includes(user?._id);
                         <div key={user._id}
                             onClick={() => nav(`/profile/${user?._id}`)}
                             className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 bg-gray-100 hover:bg-gray-200 rounded-md cursor-pointer mb-2">
@@ -61,17 +74,17 @@ export default function Search() {
                             <Button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    setIsFollowing(!isFollowing);
+                                    handleFollow(user._id);
                                 }}
-                                variant={isFollowing ? 'secondary' : 'outline'}
-                                className={isFollowing ? 'cursor-pointer flex items-center gap-1 sm:gap-2 flex-shrink-0' : 'cursor-pointer bg-blue-600 hover:bg-blue-700 text-white hover:text-white flex items-center gap-1 sm:gap-2 flex-shrink-0'}
                                 size="sm"
+                                variant={isFollowing ? 'secondary' : 'outline'}
+                                className={isFollowing ? 'cursor-pointer' : 'cursor-pointer bg-blue-600 hover:bg-blue-700 text-white hover:text-white'}
                             >
-                                <UserPlusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline">{isFollowing ? 'Following' : 'Follow'}</span>
+                                <UserPlusIcon />
+                                {isFollowing ? 'Following' : 'Follow'}
                             </Button>
                         </div>
-                    ))}
+                    })}
                 </div>
 
                 {/* POSTS */}
