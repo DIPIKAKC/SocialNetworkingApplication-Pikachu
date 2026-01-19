@@ -10,6 +10,7 @@ import AuthLayout from "./components/AuthLayout";
 import SinglePost from "./pages/User/SinglePost";
 import OtherProfile from "./pages/User/OtherProfile";
 import Search from "./pages/User/Search";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 
