@@ -6,6 +6,8 @@ export const createPost = async (req, res) => {
     const image = req.file?.path || null; // Cloudinary returns URL in path
 
     console.log('image', image);
+    console.log("req.file:", req.file);
+    console.log("req.body:", req.body);
 
     if (!content) {
         return res.status(400).json({

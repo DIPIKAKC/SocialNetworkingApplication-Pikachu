@@ -70,7 +70,7 @@ export default function CreatePost({ onClose }) {
                 nav('/');
               } catch (err) {
                 console.log("RTK ERROR:", err);
-                toast.error( err?.data?.data || err?.data?.message || "Something went wrong");
+                toast.error( err?.data?.data || err?.data?.message || err?.message || "Something went wrong");
               }
 
             }}
