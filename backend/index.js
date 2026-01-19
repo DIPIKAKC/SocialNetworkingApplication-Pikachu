@@ -9,7 +9,7 @@ import searchRoute from './routes/searchRoute.js'
 dotenv.config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT;
 
 
 
