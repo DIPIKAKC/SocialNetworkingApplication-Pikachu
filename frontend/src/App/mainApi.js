@@ -2,6 +2,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 export const base = import.meta.env.VITE_API_URL;
+console.log(base)
 
 export const mainApi = createApi({
     reducerPath: 'mainApi',
