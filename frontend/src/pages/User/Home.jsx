@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 'use client'
 
 import { useState } from 'react'
@@ -26,6 +26,14 @@ import { useSelector } from 'react-redux'
 
 export default function Home() {
     const nav = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+    }, []);
+
+
     const [liked, setLiked] = useState()
     const [showCreatePost, setShowCreatePost] = useState(false);
     const { user } = useSelector((state) => state.userSlice);
@@ -43,7 +51,7 @@ export default function Home() {
     });
     console.log("posts", data);
     console.log("user", userData);
-    // const token= user.token;
+
 
     //myposts
     const { data: myData } = useGetMyPostsQuery();
@@ -127,9 +135,9 @@ export default function Home() {
                 <div className="col-span-1 lg:col-span-6">
                     {/* add post button mobile */}
                     <div className="lg:hidden mb-4">
-                        <Button 
-                            variant='ghost' 
-                            onClick={() => setShowCreatePost(true)} 
+                        <Button
+                            variant='ghost'
+                            onClick={() => setShowCreatePost(true)}
                             className={'w-full p-3 cursor-pointer text-white hover:bg-blue-700 hover:text-white bg-blue-500'}
                         >
                             <PlusCircleIcon className="mr-2" />
