@@ -43,7 +43,7 @@ export default function DeletePost({ id, open, onOpenChange }) {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleRemovePost}>ConFirm</AlertDialogAction>
+                    <AlertDialogAction onClick={handleRemovePost} className={'bg-red-700 hover:bg-red-800'}>ConFirm</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

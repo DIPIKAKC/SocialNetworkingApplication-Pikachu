@@ -116,17 +116,17 @@ export default function EditProfile({ onClose }) {
                                     <div className="grid gap-2">
                                         <Label htmlFor="profilePicture">Change Profile picture</Label>
                                         <Input
+                                            id="profilePicture"
                                             name="profilePicture"
+                                            type="file"
+                                            accept="image/*"
+                                            className="cursor-pointer"
                                             onChange={(e) => {
                                                 const file = e.target.files[0];
                                                 setFieldValue('profilePictureReview', URL.createObjectURL(file));
                                                 setFieldValue('profilePicture', file);
                                             }}
 
-                                            id="profilePicture"
-                                            type="file"
-                                            accept="image/*"
-                                            className="cursor-pointer"
                                         />
                                         {/* Error message */}
                                         {touched.image && errors.image && (
