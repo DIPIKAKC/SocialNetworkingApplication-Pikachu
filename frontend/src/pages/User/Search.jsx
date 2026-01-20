@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ArrowLeftIcon, UserPlusIcon } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { useFollowUserMutation } from '../APIs/UserApi/userApi';
+import { useFollowUserMutation, useGetUserQuery } from '../APIs/UserApi/userApi';
 
 export default function Search() {
     // const [isFollowing, setIsFollowing] = useState(false);
@@ -16,16 +16,18 @@ export default function Search() {
     const nav = useNavigate();
     const [params] = useSearchParams();
     const query = params.get("q");
-    const { user } = useSelector((state) => state.userSlice)
+    // const { user } = useSelector((state) => state.userSlice)
 
     const { data, isLoading } = useSearchQuery(query, {
         skip: !query
     });
     console.log('search data', data)
-
-
+    
+    
+    const { data: currentUser } = useGetUserQuery();
+    console.log('current user data', currentUser)
     const [followUser] = useFollowUserMutation();
-    const handleFollow = async () => {
+    const handleFollow = async (id) => {
         try {
             await followUser(id).unwrap();
         } catch (err) {
@@ -56,10 +58,10 @@ export default function Search() {
                     <h2 className="font-semibold text-base sm:text-lg mb-2">Users</h2>
                     {data?.users?.length === 0 && <p className="text-sm sm:text-base">No users found</p>}
                     {data?.users?.map((user) => {
-                        const isFollowing = user?.following?.includes(user?._id);
-                        <div key={user._id}
+                        const isFollowing = currentUser?.user?.following?.includes(user?._id);
+                        return <div key={user._id}
                             onClick={() => nav(`/profile/${user?._id}`)}
-                            className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 bg-gray-100 hover:bg-gray-200 rounded-md cursor-pointer mb-2">
+                            className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 bg-gray-100 rounded-md cursor-pointer mb-2">
 
                             <div className='flex items-center gap-2 sm:gap-3 flex-1 min-w-0'>
                                 <img
@@ -74,10 +76,10 @@ export default function Search() {
                             <Button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleFollow(user._id);
+                                    handleFollow(user?._id);
                                 }}
                                 size="sm"
-                                variant={isFollowing ? 'secondary' : 'outline'}
+                                variant="outline"
                                 className={isFollowing ? 'cursor-pointer' : 'cursor-pointer bg-blue-600 hover:bg-blue-700 text-white hover:text-white'}
                             >
                                 <UserPlusIcon />
